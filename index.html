@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You, Raisa 💛</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #fdf6e8;
+    --vanilla: #f5e6c8;
+    --warm-white: #fefaf2;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale: #f0dfa0;
+    --blush: #f2d9d0;
+    --rose: #d4917a;
+    --ink: #3d2c1e;
+    --ink-light: #6b4f3a;
+    --parchment: #ede0c4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    min-height: 100vh;
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── BACKGROUND SPARKLES ── */
+  #sparkle-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── PHASES ── */
+  .phase {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.9s ease;
+    padding: 20px;
+  }
+  .phase.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── PHASE 1: ENVELOPE ── */
+  #phase1 { flex-direction: column; gap: 24px; }
+
+  .envelope-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .prompt-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    color: var(--ink-light);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    text-align: center;
+    animation: floatText 4s ease-in-out infinite;
+  }
+
+  @keyframes floatText {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .envelope-scene {
+    position: relative;
+    width: clamp(240px, 60vw, 320px);
+    height: clamp(160px, 40vw, 210px);
+    cursor: pointer;
+    filter: drop-shadow(0 12px 40px rgba(180,140,60,0.25));
+    transition: filter 0.3s ease, transform 0.3s ease;
+    animation: floatEnv 5s ease-in-out infinite;
+  }
+  .envelope-scene:hover {
+    filter: drop-shadow(0 18px 55px rgba(180,140,60,0.4));
+    transform: scale(1.03);
+    animation: none;
+  }
+
+  @keyframes floatEnv {
+    0%, 100% { transform: translateY(0px) rotate(-1deg); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+  }
+
+  .env-body {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #f0dfa0 0%, #e8c97a 50%, #d4af60 100%);
+    border-radius: 4px 4px 8px 8px;
+    box-shadow: inset 0 -3px 10px rgba(0,0,0,0.08);
+  }
+  .env-bottom-fold {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(170deg, #dba850 0%, #c9a84c 100%);
+    clip-path: polygon(0 0, 50% 75%, 100% 0, 100% 100%, 0 100%);
+    border-radius: 0 0 8px 8px;
+  }
+  .env-left-fold {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 50%;
+    background: linear-gradient(120deg, #e0c070 0%, #d4af60 100%);
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    border-radius: 4px 0 0 0;
+  }
+  .env-right-fold {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 50%;
+    background: linear-gradient(240deg, #e8c97a 0%, #cca048 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    border-radius: 0 4px 0 0;
+  }
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    transform-origin: top center;
+    transition: transform 0.8s cubic-bezier(0.4,0,0.2,1);
+    z-index: 2;
+  }
+  .env-flap-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #f5e6a0 0%, #e0c060 60%, #c8a040 100%);
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .env-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 38px;
+    height: 38px;
+    background: radial-gradient(circle, #e8a0a0 0%, #d07070 60%, #b85050 100%);
+    border-radius: 50%;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 2px 10px rgba(180,80,80,0.4);
+    transition: opacity 0.3s ease;
+  }
+
+  .envelope-scene.open .env-flap {
+    transform: rotateX(180deg);
+  }
+  .envelope-scene.open .env-seal {
+    opacity: 0;
+  }
+
+  /* Letter sliding out */
+  .letter-peek {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0px);
+    width: 82%;
+    height: 60%;
+    background: var(--warm-white);
+    border-radius: 3px;
+    z-index: 1;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.4s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .envelope-scene.open .letter-peek {
+    transform: translateX(-50%) translateY(-90px);
+  }
+  .letter-peek-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.1rem;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.5s ease 1.1s;
+    text-align: center;
+    padding: 0 10px;
+  }
+  .envelope-scene.open .letter-peek-text {
+    opacity: 1;
+  }
+
+  /* ── LETTER CARD (shared) ── */
+  .letter-card {
+    background: var(--warm-white);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 6px;
+    padding: clamp(28px, 6vw, 56px) clamp(24px, 6vw, 52px);
+    max-width: 580px;
+    width: 100%;
+    position: relative;
+    box-shadow:
+      0 4px 6px rgba(180,140,60,0.08),
+      0 20px 60px rgba(180,140,60,0.15),
+      inset 0 0 0 1px rgba(255,255,255,0.7);
+    animation: floatCard 6s ease-in-out infinite;
+  }
+
+  @keyframes floatCard {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .letter-card::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  .letter-ornament {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+    opacity: 0.6;
+    letter-spacing: 8px;
+  }
+
+  .letter-heading {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2rem, 7vw, 3.2rem);
+    color: var(--gold);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 20px rgba(201,168,76,0.3);
+  }
+
+  .letter-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .letter-divider span { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-pale), transparent); }
+  .letter-divider i { color: var(--gold-light); font-size: 0.9rem; }
+
+  .letter-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    color: var(--ink);
+    line-height: 1.85;
+    font-weight: 300;
+    text-align: center;
+  }
+  .letter-body em {
+    font-style: italic;
+    color: var(--ink-light);
+  }
+  .letter-body strong {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .letter-signature {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--rose);
+    text-align: right;
+    margin-top: 20px;
+    opacity: 0.85;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-continue {
+    display: block;
+    margin: 28px auto 0;
+    padding: 13px 40px;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: var(--warm-white);
+    border: none;
+    border-radius: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-continue::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .btn-continue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.55);
+  }
+  .btn-continue:hover::after { opacity: 1; }
+  .btn-continue:active { transform: translateY(0); }
+
+  /* ── PROPOSAL BUTTONS ── */
+  .proposal-btns {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+
+  .btn-yes {
+    padding: 14px 44px;
+    background: linear-gradient(135deg, #e8a0a0, #d07070, #b85050);
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(184,80,80,0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-yes:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 35px rgba(184,80,80,0.55);
+  }
+  .btn-yes::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.25), transparent 70%);
+  }
+
+  .btn-no {
+    padding: 14px 44px;
+    background: transparent;
+    color: var(--ink-light);
+    border: 1.5px solid rgba(107,79,58,0.35);
+    border-radius: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: fixed; /* will be moved by JS */
+  }
+  .btn-no:hover {
+    background: rgba(107,79,58,0.05);
+  }
+
+  /* ── PHASE 3: ACCEPTANCE ── */
+  #phase3 .letter-card {
+    background: linear-gradient(160deg, #fff8f0 0%, var(--warm-white) 100%);
+    max-width: 620px;
+  }
+
+  .heart-big {
+    font-size: clamp(3rem, 10vw, 5rem);
+    text-align: center;
+    animation: heartbeat 1.4s ease-in-out infinite;
+    display: block;
+    margin-bottom: 10px;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.2); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.15); }
+    56% { transform: scale(1); }
+  }
+
+  /* ── CONFETTI ── */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ── PHASE 1 OVERLAY (open letter full view) ── */
+  #phase1-letter {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    padding: 20px;
+    background: rgba(253,246,232,0.6);
+    backdrop-filter: blur(2px);
+  }
+  #phase1-letter.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── SCROLLABLE on small screens ── */
+  .phase { align-items: flex-start; padding-top: 30px; padding-bottom: 30px; overflow-y: auto; }
+  .phase > * { margin: auto; }
+
+  @media (max-height: 700px) {
+    .letter-card { padding: 22px 20px; }
+    .letter-heading { font-size: 2rem; }
+  }
+  @keyframes popIn {
+    0%   { opacity:0; transform: scale(0.7) translateY(30px); }
+    100% { opacity:1; transform: scale(1) translateY(0); }
+  }
+  @keyframes wobble {
+    0%,100% { transform: rotate(-8deg) scale(1); }
+    50%      { transform: rotate(8deg)  scale(1.15); }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="sparkle-canvas"></canvas>
+
+<!-- PHASE 1: ENVELOPE -->
+<div class="phase active" id="phase1">
+  <div class="envelope-wrap">
+    <p class="prompt-text">✦ A special message for you, Raisa... Click to open ✦</p>
+    <div class="envelope-scene" id="envelope" onclick="openEnvelope()">
+      <div class="env-body"></div>
+      <div class="env-left-fold"></div>
+      <div class="env-right-fold"></div>
+      <div class="env-bottom-fold"></div>
+      <div class="letter-peek">
+        <span class="letter-peek-text">You are my everything...</span>
+      </div>
+      <div class="env-flap"><div class="env-flap-inner"></div></div>
+      <div class="env-seal" id="seal">💛</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 1 FULL LETTER (after envelope open) -->
+<div id="phase1-letter">
+  <div class="letter-card">
+    <div class="letter-ornament">✦ · ✦ · ✦</div>
+    <h1 class="letter-heading">Dear Raisa,</h1>
+    <div class="letter-divider">
+      <span></span><i>❧</i><span></span>
+    </div>
+    <p class="letter-body">
+      Welcome, my love. I'm so glad you're here.<br><br>
+      I've been searching for the right words for a very long time —
+      <em>words worthy of what I feel for you.</em>
+      <br><br>
+      Today, I finally found the courage to say them.<br><br>
+      Take a breath. Take your time.<br>
+      <strong>What comes next... is only for you.</strong>
+    </p>
+    <div class="letter-divider" style="margin-top:20px;">
+      <span></span><i>❧</i><span></span>
+    </div>
+    <button class="btn-continue" onclick="goToProposal()">Continue →</button>
+  </div>
+</div>
+
+<!-- PHASE 2: PROPOSAL -->
+<div class="phase" id="phase2">
+  <div class="letter-card" style="max-width:600px; animation-duration:7s;">
+    <div class="letter-ornament">✦ · ✦ · ✦</div>
+    <h1 class="letter-heading">Afrida Jahan Raisa</h1>
+    <div class="letter-divider">
+      <span></span><i>❧</i><span></span>
+    </div>
+    <p class="letter-body">
+      From the very first moment I saw you, something shifted inside me —
+      something quiet, certain, and <em>unmistakably real.</em>
+      <br><br>
+      You are the warmth I reach for on cold mornings,
+      the laugh that undoes every difficult day,
+      the person whose name my heart says
+      <em>before my mind even wakes up.</em>
+      <br><br>
+      I have loved you in a thousand silent ways —
+      in glances held a little too long,
+      in prayers whispered for your happiness,
+      in the way every beautiful thing reminds me of you.
+      <br><br>
+      Today I don't want to be silent anymore.
+      <br><br>
+      <strong>Afrida Jahan Raisa</strong> — you are the answer to every question
+      I didn't know I was asking. You are home.<br><br>
+
+      Will you do me the greatest honour of my life?<br>
+      Will you walk through this world beside me, 
+      through every season, every storm, every quiet evening —
+      <strong>as my wife?</strong>
+      <br><br>
+      <em>My whole heart is yours, if you'll have it.</em>
+    </p>
+    <div class="letter-divider" style="margin-top:18px;">
+      <span></span><i>❧</i><span></span>
+    </div>
+    <p class="letter-signature">Forever yours 💛</p>
+
+    <div class="proposal-btns" id="proposal-btns">
+      <button class="btn-yes" onclick="sayYes()">Yes, forever 💛</button>
+      <button class="btn-no" id="btn-no" onmouseenter="runAway()" ontouchstart="runAway(event)" onclick="openNoModal()">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- NO MODAL -->
+<div id="no-modal" style="
+  display:none; position:fixed; inset:0; z-index:9999;
+  align-items:center; justify-content:center; padding:20px;
+  background: rgba(61,44,30,0.45); backdrop-filter: blur(6px);
+">
+  <div id="no-modal-card" style="
+    background: var(--warm-white);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 8px;
+    padding: clamp(28px,6vw,52px) clamp(24px,6vw,48px);
+    max-width: 480px; width: 100%;
+    box-shadow: 0 24px 80px rgba(180,140,60,0.25), inset 0 0 0 1px rgba(255,255,255,0.7);
+    text-align: center;
+    animation: popIn 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+  ">
+    <div style="font-size:clamp(2.5rem,8vw,4rem); animation: wobble 0.8s ease-in-out infinite; display:inline-block;">🥺</div>
+    <h2 style="font-family:'Great Vibes',cursive; font-size:clamp(1.8rem,6vw,2.8rem); color:var(--rose); margin:10px 0 6px; text-shadow:0 2px 15px rgba(212,145,122,0.3);">Please, Raisa...</h2>
+    <div style="height:1px; background:linear-gradient(90deg,transparent,var(--gold-pale),transparent); margin:12px 0;"></div>
+    <p style="font-family:'Cormorant Garamond',serif; font-size:clamp(1rem,2.5vw,1.15rem); color:var(--ink); line-height:1.85; font-weight:300;">
+      Are you sure? 💛<br><br>
+      My heart is sitting right here, holding its breath...<br>
+      <em>Every single beat of it belongs to you.</em><br><br>
+      I've never been more certain of anything in my life —
+      <strong>you are the one I choose, every single day.</strong><br><br>
+      Please don't say no to us.<br>
+      <em>Say yes to a lifetime of love, laughter, and me annoying you forever.</em> 🥺💛
+    </p>
+    <div style="height:1px; background:linear-gradient(90deg,transparent,var(--gold-pale),transparent); margin:16px 0;"></div>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:8px;">
+      <button onclick="closeNoModal()" style="
+        padding:12px 36px;
+        background:linear-gradient(135deg,#e8c97a,#c9a84c);
+        color:var(--warm-white); border:none; border-radius:40px;
+        font-family:'Cormorant Garamond',serif; font-size:1.05rem;
+        font-weight:500; letter-spacing:0.08em; cursor:pointer;
+        box-shadow:0 4px 20px rgba(201,168,76,0.4);
+        transition:all 0.3s ease;
+      " onmouseover="this.style.transform='translateY(-2px) scale(1.04)';this.style.boxShadow='0 8px 30px rgba(201,168,76,0.55)'"
+         onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(201,168,76,0.4)'">
+        Let me reconsider 💛
+      </button>
+      <button onclick="sayYes()" style="
+        padding:12px 36px;
+        background:linear-gradient(135deg,#e8a0a0,#b85050);
+        color:white; border:none; border-radius:40px;
+        font-family:'Cormorant Garamond',serif; font-size:1.05rem;
+        font-weight:500; letter-spacing:0.08em; cursor:pointer;
+        box-shadow:0 4px 20px rgba(184,80,80,0.35);
+        transition:all 0.3s ease;
+      " onmouseover="this.style.transform='translateY(-2px) scale(1.04)'"
+         onmouseout="this.style.transform=''">
+        Yes, forever! 💛
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3: ACCEPTANCE -->
+<div class="phase" id="phase3">
+  <div class="letter-card">
+    <span class="heart-big">💛</span>
+    <h1 class="letter-heading" style="font-size:clamp(2.2rem,8vw,4rem);">She Said Yes!</h1>
+    <div class="letter-divider">
+      <span></span><i>❧</i><span></span>
+    </div>
+    <p class="letter-body">
+      <em>Raisa...</em><br><br>
+      You have just made me the luckiest soul alive.
+      <br><br>
+      I promise to love you on the days when loving is easy —
+      and even harder on the days when it's difficult.
+      I promise to be your safety when the world feels too loud,
+      your laughter when things feel too heavy,
+      and your <em>forever person</em> in every life I'm given.
+      <br><br>
+      I don't just want to be by your side —
+      <strong>I need to be.</strong>
+      You are the missing piece I didn't know my soul was incomplete without.
+      <br><br>
+      Our future together is the most beautiful chapter
+      I have ever looked forward to writing.
+      Every morning with you, every adventure yet to come,
+      every quiet night and every joyful celebration —
+      <em>I want all of it, with you, only you.</em>
+      <br><br>
+      Thank you for existing. Thank you for being you.
+      Thank you for saying yes to <strong>us</strong>.
+      <br><br>
+      I love you — beyond words, beyond time,
+      <strong>beyond everything.</strong>
+    </p>
+    <div class="letter-divider" style="margin-top:20px;">
+      <span></span><i>❧</i><span></span>
+    </div>
+    <p class="letter-signature" style="text-align:center; font-size:clamp(1.6rem,5vw,2.4rem);">
+      Always & forever yours 💛🌙
+    </p>
+  </div>
+</div>
+
+<script>
+/* ══ SPARKLE CANVAS ══ */
+(function() {
+  const canvas = document.getElementById('sparkle-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['#e8c97a','#f0dfa0','#d4b060','#f5e6c8','#fce8e8','#f8d0d0'];
+  const SHAPES = ['✦','♡','·','✧','°'];
+
+  for (let i = 0; i < 55; i++) {
+    particles.push({
+      x: Math.random() * 1200,
+      y: Math.random() * 900,
+      shape: SHAPES[Math.floor(Math.random() * SHAPES.length)],
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      size: Math.random() * 11 + 6,
+      speedY: -(Math.random() * 0.4 + 0.1),
+      speedX: (Math.random() - 0.5) * 0.2,
+      alpha: Math.random() * 0.5 + 0.1,
+      alphaDir: Math.random() > 0.5 ? 0.003 : -0.003,
+      rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.01,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.y += p.speedY;
+      p.x += p.speedX;
+      p.alpha += p.alphaDir;
+      p.rot += p.rotSpeed;
+      if (p.alpha > 0.65 || p.alpha < 0.05) p.alphaDir *= -1;
+      if (p.y < -20) { p.y = H + 20; p.x = Math.random() * W; }
+      if (p.x < -20) p.x = W + 20;
+      if (p.x > W + 20) p.x = -20;
+
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      ctx.font = `${p.size}px serif`;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillText(p.shape, 0, 0);
+      ctx.restore();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ══ PHASE MANAGEMENT ══ */
+function showPhase(id) {
+  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ══ ENVELOPE OPEN ══ */
+let envelopeOpened = false;
+function openEnvelope() {
+  if (envelopeOpened) return;
+  envelopeOpened = true;
+  document.getElementById('envelope').classList.add('open');
+  setTimeout(() => {
+    document.getElementById('phase1-letter').classList.add('active');
+  }, 1200);
+}
+
+/* ══ GO TO PROPOSAL ══ */
+function goToProposal() {
+  document.getElementById('phase1-letter').classList.remove('active');
+  document.getElementById('phase1').classList.remove('active');
+  setTimeout(() => {
+    showPhase('phase2');
+    positionNoBtn();
+  }, 500);
+}
+
+/* ══ NO BUTTON LOGIC ══ */
+function positionNoBtn() {
+  const btn = document.getElementById('btn-no');
+  // Place it near the proposal buttons initially
+  const btns = document.getElementById('proposal-btns');
+  const rect = btns.getBoundingClientRect();
+  btn.style.left = (rect.left + rect.width * 0.6) + 'px';
+  btn.style.top  = (rect.top + 10) + 'px';
+}
+
+function runAway(e) {
+  if (e) e.preventDefault();
+  const btn = document.getElementById('btn-no');
+  const margin = 80;
+  const maxX = window.innerWidth  - margin - btn.offsetWidth;
+  const maxY = window.innerHeight - margin - btn.offsetHeight;
+  const newX = margin + Math.random() * maxX;
+  const newY = margin + Math.random() * maxY;
+  btn.style.transition = 'left 0.18s ease, top 0.18s ease';
+  btn.style.left = newX + 'px';
+  btn.style.top  = newY + 'px';
+}
+
+function openNoModal() {
+  const modal = document.getElementById('no-modal');
+  modal.style.display = 'flex';
+}
+
+function closeNoModal() {
+  const modal = document.getElementById('no-modal');
+  modal.style.display = 'none';
+  // Teleport the No button away again after modal closes
+  setTimeout(runAway, 200);
+}
+
+window.addEventListener('resize', () => {
+  if (document.getElementById('phase2').classList.contains('active')) positionNoBtn();
+});
+
+/* ══ YES ══ */
+function sayYes() {
+  document.getElementById('no-modal').style.display = 'none';
+  launchConfetti();
+  setTimeout(() => {
+    showPhase('phase3');
+  }, 900);
+}
+
+/* ══ CONFETTI ══ */
+function launchConfetti() {
+  const colors = ['#e8c97a','#f5a0a0','#a0c8f5','#a0f5c8','#f5c8a0','#d4b0f0','#fce8b0','#ff9eb5','#ffcba4'];
+  const shapes = ['♡','✦','✧','★','·','•'];
+  for (let i = 0; i < 120; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const isHeart = Math.random() > 0.45;
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.top  = '-20px';
+    el.style.fontSize = (Math.random() * 18 + 10) + 'px';
+    el.style.color = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDuration = (Math.random() * 2.5 + 1.8) + 's';
+    el.style.animationDelay    = (Math.random() * 0.8) + 's';
+    el.style.background        = 'none';
+    el.style.width = 'auto';
+    el.style.height = 'auto';
+    el.textContent = isHeart ? '♡' : shapes[Math.floor(Math.random() * shapes.length)];
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+</script>
+</body>
+</html>
